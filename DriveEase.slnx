@@ -1,0 +1,36 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DriveEase.Api/DriveEase.Api.csproj" />
+    <Project Path="src/DriveEase.Shared/DriveEase.Shared.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Enrollments/">
+    <Project Path="src/Modules/Enrollments/DriveEase.Enrollments.Application/DriveEase.Enrollments.Application.csproj" />
+    <Project Path="src/Modules/Enrollments/DriveEase.Enrollments.Domain/DriveEase.Enrollments.Domain.csproj" />
+    <Project Path="src/Modules/Enrollments/DriveEase.Enrollments.Infrastructure/DriveEase.Enrollments.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Lessons/">
+    <Project Path="src/Modules/Lessons/DriveEase.Lessons.Application/DriveEase.Lessons.Application.csproj" />
+    <Project Path="src/Modules/Lessons/DriveEase.Lessons.Domain/DriveEase.Lessons.Domain.csproj" />
+    <Project Path="src/Modules/Lessons/DriveEase.Lessons.Infrastructure/DriveEase.Lessons.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Notifications/">
+    <Project Path="src/Modules/Notifications/DriveEase.Notifications.Application/DriveEase.Notifications.Application.csproj" />
+    <Project Path="src/Modules/Notifications/DriveEase.Notifications.Domain/DriveEase.Notifications.Domain.csproj" />
+    <Project Path="src/Modules/Notifications/DriveEase.Notifications.Infrastructure/DriveEase.Notifications.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Schools/">
+    <Project Path="src/Modules/Schools/DriveEase.Schools.Application/DriveEase.Schools.Application.csproj" />
+    <Project Path="src/Modules/Schools/DriveEase.Schools.Domain/DriveEase.Schools.Domain.csproj" />
+    <Project Path="src/Modules/Schools/DriveEase.Schools.Infrastructure/DriveEase.Schools.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Students/">
+    <Project Path="src/Modules/Students/DriveEase.Students.Application/DriveEase.Students.Application.csproj" />
+    <Project Path="src/Modules/Students/DriveEase.Students.Domain/DriveEase.Students.Domain.csproj" />
+    <Project Path="src/Modules/Students/DriveEase.Students.Infrastructure/DriveEase.Students.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DriveEase.Enrollments.Application.Tests/DriveEase.Enrollments.Application.Tests.csproj" />
+    <Project Path="tests/DriveEase.Enrollments.Domain.Tests/DriveEase.Enrollments.Domain.Tests.csproj" />
+  </Folder>
+</Solution>
