@@ -9,10 +9,11 @@ public sealed class Student : AggregateRoot<Guid>
     public string PhoneNumber { get; private set; } = string.Empty;
     public DateOnly DateOfBirth { get; private set; }
     public DateTime RegisteredAt { get; private set; }
+    public string PasswordHash { get; private set; } = string.Empty;
 
     private Student() { }
 
-    public static Student Register(string fullName, string email, string phoneNumber, DateOnly dateOfBirth)
+    public static Student Register(string fullName, string email, string phoneNumber, DateOnly dateOfBirth, string passwordHash = "")
     {
         if (string.IsNullOrWhiteSpace(email))
             throw new ArgumentException("Email is required.");
@@ -24,7 +25,8 @@ public sealed class Student : AggregateRoot<Guid>
             Email = email,
             PhoneNumber = phoneNumber,
             DateOfBirth = dateOfBirth,
-            RegisteredAt = DateTime.UtcNow
+            RegisteredAt = DateTime.UtcNow,
+            PasswordHash = passwordHash
         };
     }
 

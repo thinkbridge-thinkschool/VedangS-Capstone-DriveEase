@@ -18,6 +18,7 @@ public sealed class StudentsDbContext(DbContextOptions<StudentsDbContext> option
             e.Property(x => x.Email).HasMaxLength(200).IsRequired();
             e.Property(x => x.PhoneNumber).HasMaxLength(30);
             e.Property(x => x.DateOfBirth).IsRequired();
+            e.Property(x => x.PasswordHash).HasMaxLength(500).IsRequired();
             e.HasIndex(x => x.Email).IsUnique();
             e.Ignore(x => x.DomainEvents);
         });

@@ -3,9 +3,17 @@ targetScope = 'resourceGroup'
 // ─────────────────────────────────────────────────────────────────────────────
 // DriveEase — main orchestration template
 //
-// Deploy dev  : az deployment group create -g rg-driveease-dev  --template-file infra/main.bicep --parameters infra/parameters/dev.bicepparam
-// Deploy prod : az deployment group create -g rg-driveease-prod --template-file infra/main.bicep --parameters infra/parameters/prod.bicepparam
-// What-if     : az deployment group what-if  -g rg-driveease-dev  --template-file infra/main.bicep --parameters infra/parameters/dev.bicepparam
+// Deployed via Azure Deployment Stacks (not plain `az deployment group create`).
+// Use the scripts in infra/stacks/ — they call `az stack group create` which
+// tracks every resource, detects drift, and enables clean one-command teardown.
+//
+// DEV stack  : .\infra\stacks\deploy-dev.ps1
+// PROD stack : .\infra\stacks\deploy-prod.ps1
+// App code   : azd deploy --environment <dev|prod>   (after stack is up)
+// Teardown   : .\infra\stacks\teardown-dev.ps1
+//
+// What-if (plain preview, no stack):
+//   az deployment group what-if -g rg-driveease-dev --template-file infra/main.bicep --parameters infra/parameters/dev.bicepparam
 // ─────────────────────────────────────────────────────────────────────────────
 
 @description('Environment name — drives SKU selection and resource naming')
@@ -59,7 +67,7 @@ module api 'modules/api.bicep' = {
   params: {
     appName:                    '${prefix}-api-${suffix}'
     location:                    location
-    planSku:                    environmentName == 'prod' ? 'P2v3' : 'B1'
+    planSku:                    environmentName == 'prod' ? 'S1'   : 'B1'
     sqlConnectionString:        sql.outputs.connectionString
     serviceBusConnectionString: serviceBus.outputs.primaryConnectionString
     environmentName:             environmentName

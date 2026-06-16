@@ -9,7 +9,7 @@
 using '../main.bicep'
 
 param environmentName  = 'dev'
-param location         = 'eastus'
+param location         = 'centralindia'
 param sqlAdminLogin    = 'sqladmin'
 // Falls back to the default value when SQL_ADMIN_PASSWORD is not set — dev only
 param sqlAdminPassword = readEnvironmentVariable('SQL_ADMIN_PASSWORD', 'Dev@P@ssw0rd2025!')

@@ -1,4 +1,5 @@
 using DriveEase.Schools.Application.Commands.RegisterSchool;
+using DriveEase.Schools.Application.Queries.GetAllSchools;
 using DriveEase.Schools.Application.Queries.GetSchool;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,13 @@ namespace DriveEase.Api.Controllers;
 [Route("api/[controller]")]
 public sealed class SchoolsController(ISender sender) : ControllerBase
 {
+    [HttpGet]
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    {
+        var schools = await sender.Send(new GetAllSchoolsQuery(), cancellationToken);
+        return Ok(schools);
+    }
+
     [HttpPost]
     public async Task<IActionResult> Register([FromBody] RegisterSchoolCommand command, CancellationToken cancellationToken)
     {
