@@ -7,7 +7,17 @@ namespace DriveEase.Lessons.Infrastructure.Persistence;
 public sealed class LessonRepository(LessonsDbContext dbContext) : ILessonRepository
 {
     public Task<Lesson?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
-        dbContext.Lessons.FirstOrDefaultAsync(l => l.Id == id, cancellationToken);
+        dbContext.Lessons
+            .AsNoTracking()
+            .FirstOrDefaultAsync(l => l.Id == id, cancellationToken);
+
+    public async Task<IReadOnlyList<Lesson>> GetAllByStudentAsync(
+        Guid studentId, CancellationToken cancellationToken = default) =>
+        await dbContext.Lessons
+            .AsNoTracking()
+            .Where(l => l.StudentId == studentId)
+            .OrderByDescending(l => l.ScheduledAt)
+            .ToListAsync(cancellationToken);
 
     public async Task<IReadOnlyList<Lesson>> GetUpcomingByStudentAsync(
         Guid studentId, TimeSpan within, CancellationToken cancellationToken = default)
@@ -15,6 +25,7 @@ public sealed class LessonRepository(LessonsDbContext dbContext) : ILessonReposi
         var now = DateTime.UtcNow;
         var cutoff = now.Add(within);
         return await dbContext.Lessons
+            .AsNoTracking()
             .Where(l => l.StudentId == studentId
                      && l.Status == LessonStatus.Scheduled
                      && l.ScheduledAt >= now
@@ -24,7 +35,10 @@ public sealed class LessonRepository(LessonsDbContext dbContext) : ILessonReposi
 
     public async Task<IReadOnlyList<Lesson>> GetByEnrollmentAsync(
         Guid enrollmentId, CancellationToken cancellationToken = default) =>
-        await dbContext.Lessons.Where(l => l.EnrollmentId == enrollmentId).ToListAsync(cancellationToken);
+        await dbContext.Lessons
+            .AsNoTracking()
+            .Where(l => l.EnrollmentId == enrollmentId)
+            .ToListAsync(cancellationToken);
 
     public async Task AddAsync(Lesson lesson, CancellationToken cancellationToken = default)
     {

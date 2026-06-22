@@ -1,0 +1,40 @@
+import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
+
+export const routes: Routes = [
+  { path: '', redirectTo: 'schools', pathMatch: 'full' },
+  {
+    path: 'login',
+    loadComponent: () => import('./features/auth/login/login').then(m => m.LoginComponent)
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./features/auth/register/register').then(m => m.RegisterComponent)
+  },
+  {
+    path: 'schools',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/schools/schools-list/schools-list').then(m => m.SchoolsListComponent)
+  },
+  {
+    path: 'schools/:id',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/schools/school-detail/school-detail').then(m => m.SchoolDetailComponent)
+  },
+  {
+    path: 'schools/:id/enroll',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/schools/enroll/enroll').then(m => m.EnrollComponent)
+  },
+  {
+    path: 'lessons',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/lessons/my-lessons/my-lessons').then(m => m.MyLessonsComponent)
+  },
+  {
+    path: 'lessons/book',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/lessons/book-lesson/book-lesson').then(m => m.BookLessonComponent)
+  },
+  { path: '**', redirectTo: 'schools' }
+];

@@ -1,0 +1,36 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Driving Schools</h1>
+    <p>Browse and enroll in a certified driving school near you</p>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-grid">
+      @for (_ of [1,2,3,4,5,6]; track $index) {
+        <div class="card skeleton"></div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="empty-state">
+      <span class="empty-icon">⚠️</span>
+      <p>{{ error() }}</p>
+    </div>
+  } @else if (schools().length === 0) {
+    <div class="empty-state">
+      <span class="empty-icon">🏫</span>
+      <p>No schools registered yet.</p>
+    </div>
+  } @else {
+    <div class="schools-grid">
+      @for (school of schools(); track school.id) {
+        <a class="card" [routerLink]="['/schools', school.id]">
+          <div class="card-icon">🏫</div>
+          <h3>{{ school.name }}</h3>
+          <p class="card-address">📍 {{ school.address }}</p>
+          <p class="card-email">✉️ {{ school.contactEmail }}</p>
+          <span class="card-cta">View details →</span>
+        </a>
+      }
+    </div>
+  }
+</div>

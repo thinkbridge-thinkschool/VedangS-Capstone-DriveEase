@@ -1,0 +1,57 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>My Lessons</h1>
+      <p>Your scheduled and completed driving lessons</p>
+    </div>
+    @if (hasEnrollment()) {
+      <a class="btn-book" routerLink="/lessons/book">+ Book a lesson</a>
+    }
+  </div>
+
+  @if (loading()) {
+    <div class="lessons-list">
+      @for (_ of [1,2,3]; track $index) {
+        <div class="lesson-card skeleton"></div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="empty-state">
+      <span class="empty-icon">⚠️</span>
+      <p>{{ error() }}</p>
+    </div>
+  } @else if (lessons().length === 0) {
+    <div class="empty-state">
+      <span class="empty-icon">🚗</span>
+      <h3>No lessons yet</h3>
+      @if (hasEnrollment()) {
+        <p>You're enrolled — book your first lesson now.</p>
+        <a class="btn-book" routerLink="/lessons/book">Book a lesson</a>
+      } @else {
+        <p>Enroll in a driving school first to book lessons.</p>
+        <a class="btn-book" routerLink="/schools">Browse schools</a>
+      }
+    </div>
+  } @else {
+    <div class="lessons-list">
+      @for (lesson of lessons(); track lesson.id) {
+        <div class="lesson-card">
+          <div class="lesson-date">
+            <span class="date-day">{{ lesson.scheduledAt | date:'d' }}</span>
+            <span class="date-month">{{ lesson.scheduledAt | date:'MMM' }}</span>
+          </div>
+          <div class="lesson-info">
+            <div class="lesson-time">{{ lesson.scheduledAt | date:'h:mm a' }}</div>
+            <div class="lesson-duration">Duration: {{ lesson.duration }}</div>
+            @if (lesson.notes) {
+              <div class="lesson-notes">{{ lesson.notes }}</div>
+            }
+          </div>
+          <span class="lesson-status" [class]="statusClass(lesson.status)">
+            {{ lesson.status }}
+          </span>
+        </div>
+      }
+    </div>
+  }
+</div>

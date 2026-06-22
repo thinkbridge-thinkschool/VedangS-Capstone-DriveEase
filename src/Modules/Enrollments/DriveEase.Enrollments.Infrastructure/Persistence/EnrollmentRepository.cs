@@ -8,10 +8,10 @@ namespace DriveEase.Enrollments.Infrastructure.Persistence;
 public sealed class EnrollmentRepository(EnrollmentsDbContext dbContext) : IEnrollmentRepository
 {
     public Task<Enrollment?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
-        dbContext.Enrollments.FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+        dbContext.Enrollments.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
 
     public Task<Enrollment?> GetActiveByStudentIdAsync(Guid studentId, CancellationToken cancellationToken = default) =>
-        dbContext.Enrollments.FirstOrDefaultAsync(
+        dbContext.Enrollments.AsNoTracking().FirstOrDefaultAsync(
             e => e.StudentId == studentId && e.Status == EnrollmentStatus.Active,
             cancellationToken);
 
@@ -20,6 +20,7 @@ public sealed class EnrollmentRepository(EnrollmentsDbContext dbContext) : IEnro
     {
         var cutoff = DateTime.UtcNow - age;
         return await dbContext.Enrollments
+            .AsNoTracking()
             .Where(e => e.PaymentStatus == PaymentStatus.Pending && e.EnrolledAt < cutoff)
             .ToListAsync(cancellationToken);
     }

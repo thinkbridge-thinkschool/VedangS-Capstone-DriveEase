@@ -7,10 +7,10 @@ namespace DriveEase.Schools.Infrastructure.Persistence;
 public sealed class SchoolRepository(SchoolsDbContext dbContext) : IDrivingSchoolRepository
 {
     public Task<DrivingSchool?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
-        dbContext.Schools.FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+        dbContext.Schools.AsNoTracking().FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
 
     public async Task<IReadOnlyList<DrivingSchool>> GetAllActiveAsync(CancellationToken cancellationToken = default) =>
-        await dbContext.Schools.Where(s => s.IsActive).ToListAsync(cancellationToken);
+        await dbContext.Schools.AsNoTracking().Where(s => s.IsActive).ToListAsync(cancellationToken);
 
     public async Task AddAsync(DrivingSchool school, CancellationToken cancellationToken = default)
     {
@@ -22,11 +22,12 @@ public sealed class SchoolRepository(SchoolsDbContext dbContext) : IDrivingSchoo
 public sealed class InstructorRepository(SchoolsDbContext dbContext) : IInstructorRepository
 {
     public Task<Instructor?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
-        dbContext.Instructors.FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
+        dbContext.Instructors.AsNoTracking().FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
 
     public async Task<IReadOnlyList<Instructor>> GetAvailableBySchoolAsync(
         Guid schoolId, CancellationToken cancellationToken = default) =>
         await dbContext.Instructors
+            .AsNoTracking()
             .Where(i => i.SchoolId == schoolId && i.IsAvailable)
             .ToListAsync(cancellationToken);
 

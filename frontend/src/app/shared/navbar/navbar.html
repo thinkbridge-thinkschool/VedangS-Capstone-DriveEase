@@ -1,0 +1,17 @@
+<nav class="navbar">
+  <a class="navbar-brand" routerLink="/schools">
+    <span class="brand-icon">🚗</span>
+    DriveEase
+  </a>
+
+  @if (auth.isLoggedIn()) {
+    <div class="navbar-links">
+      <a routerLink="/schools" routerLinkActive="active">Schools</a>
+      <a routerLink="/lessons" routerLinkActive="active">My Lessons</a>
+    </div>
+    <div class="navbar-user">
+      <span class="user-name">{{ auth.fullName() }}</span>
+      <button class="btn-logout" (click)="logout()">Sign out</button>
+    </div>
+  }
+</nav>

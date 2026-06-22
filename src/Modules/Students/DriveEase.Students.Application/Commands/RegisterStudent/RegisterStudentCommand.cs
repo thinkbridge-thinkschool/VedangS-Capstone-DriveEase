@@ -7,4 +7,5 @@ public sealed record RegisterStudentCommand(
     [property: Required, MaxLength(200)] string FullName,
     [property: Required, EmailAddress, MaxLength(200)] string Email,
     [property: Phone, MaxLength(30)] string PhoneNumber,
-    DateOnly DateOfBirth) : IRequest<Guid>;
+    DateOnly DateOfBirth,
+    [property: Required, MinLength(8), MaxLength(100)] string Password) : IRequest<Guid>;

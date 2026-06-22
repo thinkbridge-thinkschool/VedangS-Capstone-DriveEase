@@ -1,0 +1,43 @@
+<div class="page">
+  <a class="back-link" routerLink="/schools">← All schools</a>
+
+  @if (loading()) {
+    <div class="skeleton-detail"></div>
+  } @else if (error()) {
+    <div class="empty-state">
+      <span class="empty-icon">⚠️</span>
+      <p>{{ error() }}</p>
+    </div>
+  } @else if (school()) {
+    <div class="detail-card">
+      <div class="detail-header">
+        <span class="detail-icon">🏫</span>
+        <div>
+          <h1>{{ school()!.name }}</h1>
+          <span class="badge" [class.badge-active]="school()!.isActive">
+            {{ school()!.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="detail-meta">
+        <div class="meta-item">
+          <span class="meta-label">Address</span>
+          <span>{{ school()!.address }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Contact</span>
+          <span>{{ school()!.contactEmail }}</span>
+        </div>
+      </div>
+
+      @if (school()!.isActive) {
+        <a class="btn-enroll" [routerLink]="['/schools', school()!.id, 'enroll']">
+          Enroll now →
+        </a>
+      } @else {
+        <p class="inactive-note">This school is not currently accepting enrollments.</p>
+      }
+    </div>
+  }
+</div>
