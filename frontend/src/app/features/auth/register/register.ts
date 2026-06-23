@@ -76,7 +76,7 @@ export class RegisterComponent implements AfterViewInit, OnDestroy {
     this.auth.register({
       fullName:    v.fullName!,
       email:       v.email!,
-      phoneNumber: v.phoneNumber ?? '',
+      phoneNumber: v.phoneNumber || null,
       dateOfBirth,
       password:    v.password!
     }).subscribe({
