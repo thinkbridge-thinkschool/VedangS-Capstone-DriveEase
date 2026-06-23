@@ -301,6 +301,45 @@ $sans:      system-ui, -apple-system, 'Segoe UI', Helvetica, sans-serif;
   &:disabled               { opacity: 0.38; cursor: not-allowed; }
 }
 
+// ── Role Toggle ─────────────────────────────────────────────────
+.role-toggle {
+  display: flex;
+  gap: 0;
+  background: $border;
+  border-radius: 6px;
+  padding: 3px;
+  margin-bottom: 24px;
+  width: fit-content;
+}
+
+.role-btn {
+  padding: 6px 20px;
+  font-family: $mono;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background: transparent;
+  color: $muted;
+  transition: background 0.15s, color 0.15s;
+
+  &.active {
+    background: $ground;
+    color: $text;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  }
+}
+
+.instructor-btn {
+  background: #111827 !important;
+  color: #f9fafb !important;
+
+  &:hover:not(:disabled) { background: #1f2937 !important; opacity: 1; }
+}
+
 // ── Footer Link ─────────────────────────────────────────────────
 .auth-footer {
   text-align: center;
