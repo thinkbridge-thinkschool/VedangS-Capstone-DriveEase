@@ -42,6 +42,11 @@ resource appService 'Microsoft.Web/sites@2023-12-01' = {
   name: appName
   location: location
   kind: 'app,linux'
+  // azd uses these tags to discover the App Service during `azd deploy`
+  tags: {
+    'azd-env-name': environmentName
+    'azd-service-name': 'api'
+  }
   identity: {
     type: 'SystemAssigned' // enables passwordless access to Key Vault / managed resources
   }

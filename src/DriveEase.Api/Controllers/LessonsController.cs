@@ -1,6 +1,7 @@
 using DriveEase.Lessons.Application.Commands.BookLesson;
 using DriveEase.Lessons.Application.Commands.CompleteLesson;
 using DriveEase.Lessons.Application.Queries.GetLesson;
+using DriveEase.Lessons.Application.Queries.GetStudentLessons;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,13 @@ public sealed class LessonsController(ISender sender) : ControllerBase
     {
         var dto = await sender.Send(new GetLessonQuery(id), cancellationToken);
         return dto is null ? NotFound() : Ok(dto);
+    }
+
+    [HttpGet("student/{studentId:guid}")]
+    public async Task<IActionResult> GetByStudent(Guid studentId, CancellationToken cancellationToken)
+    {
+        var lessons = await sender.Send(new GetStudentLessonsQuery(studentId), cancellationToken);
+        return Ok(lessons);
     }
 
     [HttpPost("{id:guid}/complete")]

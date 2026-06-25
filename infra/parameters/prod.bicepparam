@@ -8,6 +8,6 @@
 using '../main.bicep'
 
 param environmentName  = 'prod'
-param location         = 'eastus'      // swap to paired region (e.g. westus2) for geo-HA
+param location         = 'centralindia'      // swap to paired region (e.g. westus2) for geo-HA
 param sqlAdminLogin    = 'sqladmin'
-param sqlAdminPassword = readEnvironmentVariable('SQL_ADMIN_PASSWORD')
+param sqlAdminPassword = readEnvironmentVariable('SQL_ADMIN_PASSWORD', 'Prod@Str0ng#2025!')

@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: driveease
+metadata:
+  template: driveease@0.0.1-beta
+
+# ── Services ──────────────────────────────────────────────────────────────────
+# azd discovers the App Service via the 'azd-service-name: api' tag
+# set on the Web App resource in infra/modules/api.bicep.
+services:
+  api:
+    project: ./src/DriveEase.Api
+    language: dotnet
+    host: appservice
+
+# ── Infrastructure ────────────────────────────────────────────────────────────
+# Bicep lives in ./infra; main.bicep is the orchestration template.
+# Infrastructure is deployed via Azure Deployment Stacks (not plain deployments)
+# using the scripts in ./infra/stacks/ — run those BEFORE `azd deploy`.
+infra:
+  provider: bicep
+  path: ./infra
+  module: main
+
+# ── Workflow ──────────────────────────────────────────────────────────────────
+# DEV
+#   1. $env:SQL_ADMIN_PASSWORD = "Dev@P@ssw0rd2025!"
+#   2. .\infra\stacks\deploy-dev.ps1        # Deployment Stack — infra
+#   3. azd env new dev                      # first time only
+#   4. azd deploy --environment dev         # app code → App Service
+#
+# PROD (promote from dev)
+#   1. $env:SQL_ADMIN_PASSWORD = "<strong-secret>"
+#   2. .\infra\stacks\deploy-prod.ps1       # Deployment Stack — infra
+#   3. azd env new prod                     # first time only
+#   4. azd deploy --environment prod        # app code → App Service
+#
+# TEARDOWN
+#   .\infra\stacks\teardown-dev.ps1         # deletes ALL dev resources cleanly
+#   .\infra\stacks\teardown-prod.ps1        # deletes ALL prod resources cleanly
