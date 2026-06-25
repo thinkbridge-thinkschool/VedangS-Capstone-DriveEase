@@ -7,10 +7,10 @@ namespace DriveEase.Students.Infrastructure.Persistence;
 public sealed class StudentRepository(StudentsDbContext dbContext) : IStudentRepository
 {
     public Task<Student?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
-        dbContext.Students.FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+        dbContext.Students.AsNoTracking().FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
 
     public Task<Student?> GetByEmailAsync(string email, CancellationToken cancellationToken = default) =>
-        dbContext.Students.FirstOrDefaultAsync(s => s.Email == email, cancellationToken);
+        dbContext.Students.AsNoTracking().FirstOrDefaultAsync(s => s.Email == email, cancellationToken);
 
     public async Task AddAsync(Student student, CancellationToken cancellationToken = default)
     {

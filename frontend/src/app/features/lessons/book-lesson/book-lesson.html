@@ -1,0 +1,71 @@
+<div class="page">
+  <a class="back-link" routerLink="/lessons">← My lessons</a>
+
+  @if (!hasEnrollment) {
+    <div class="warn-card">
+      <span class="warn-icon">⚠️</span>
+      <div>
+        <strong>No active enrollment</strong>
+        <p>You need to enroll in a driving school before booking a lesson.</p>
+        <a routerLink="/schools">Browse schools →</a>
+      </div>
+    </div>
+  } @else if (success()) {
+    <div class="success-card">
+      <span class="success-icon">✅</span>
+      <h2>Lesson booked!</h2>
+      <p>Redirecting to your lessons…</p>
+    </div>
+  } @else {
+    <div class="form-card">
+      <h1>Book a lesson</h1>
+      <p class="subtitle">Schedule your next driving lesson with your instructor.</p>
+
+      @if (error()) {
+        <div class="alert-error" role="alert">{{ error() }}</div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="field">
+          <label for="instructorId">Instructor ID</label>
+          <input
+            id="instructorId"
+            type="text"
+            formControlName="instructorId"
+            placeholder="Paste instructor UUID"
+            [attr.aria-invalid]="form.controls.instructorId.invalid && form.controls.instructorId.touched"
+          />
+          @if (form.controls.instructorId.invalid && form.controls.instructorId.touched) {
+            <span class="field-error" role="alert">Instructor ID is required</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="scheduledAt">Date & time</label>
+          <input
+            id="scheduledAt"
+            type="datetime-local"
+            formControlName="scheduledAt"
+            [attr.aria-invalid]="form.controls.scheduledAt.invalid && form.controls.scheduledAt.touched"
+          />
+          @if (form.controls.scheduledAt.invalid && form.controls.scheduledAt.touched) {
+            <span class="field-error" role="alert">Please select a date and time</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="duration">Duration</label>
+          <select id="duration" formControlName="durationHours">
+            @for (opt of durationOptions; track opt.value) {
+              <option [value]="opt.value">{{ opt.label }}</option>
+            }
+          </select>
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="loading()">
+          {{ loading() ? 'Booking…' : 'Book lesson' }}
+        </button>
+      </form>
+    </div>
+  }
+</div>

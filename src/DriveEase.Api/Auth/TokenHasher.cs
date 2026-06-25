@@ -2,9 +2,9 @@ namespace DriveEase.Api.Auth;
 
 public static class TokenHasher
 {
-    // TODO: Hash a plain-text password into a storable string
-    public static string Hash(string password) => throw new NotImplementedException();
+    public static string Hash(string password) =>
+        BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12);
 
-    // TODO: Verify a plain-text password against a stored hash
-    public static bool Verify(string password, string storedHash) => throw new NotImplementedException();
+    public static bool Verify(string password, string storedHash) =>
+        BCrypt.Net.BCrypt.Verify(password, storedHash);
 }
