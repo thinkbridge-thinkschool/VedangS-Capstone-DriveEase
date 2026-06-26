@@ -137,6 +137,16 @@ builder.Services.AddRateLimiter(options =>
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Frontend", policy => policy
+        .WithOrigins(
+            "http://localhost:4200",
+            "https://green-meadow-07312bf00.7.azurestaticapps.net")
+        .AllowAnyHeader()
+        .AllowAnyMethod());
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -287,6 +297,7 @@ app.Use(async (ctx, next) =>
 // Reads X-Correlation-Id from request (or generates one) and pushes to Serilog.
 app.UseMiddleware<CorrelationIdMiddleware>();
 
+app.UseCors("Frontend");
 app.UseRateLimiter();
 
 // ── JWT structural pre-check (zero allocation) ───────────────────────────────
