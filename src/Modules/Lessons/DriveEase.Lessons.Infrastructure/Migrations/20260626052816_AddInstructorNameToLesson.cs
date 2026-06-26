@@ -10,13 +10,23 @@ namespace DriveEase.Lessons.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "InstructorName",
-                schema: "lessons",
-                table: "Lessons",
-                type: "TEXT",
-                nullable: false,
-                defaultValue: "");
+            if (migrationBuilder.ActiveProvider.Contains("SqlServer", StringComparison.OrdinalIgnoreCase))
+            {
+                migrationBuilder.Sql("""
+                    IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(N'[lessons].[Lessons]') AND name = N'InstructorName')
+                        ALTER TABLE [lessons].[Lessons] ADD [InstructorName] nvarchar(max) NOT NULL DEFAULT N'';
+                    """);
+            }
+            else
+            {
+                migrationBuilder.AddColumn<string>(
+                    name: "InstructorName",
+                    schema: "lessons",
+                    table: "Lessons",
+                    type: "TEXT",
+                    nullable: false,
+                    defaultValue: "");
+            }
         }
 
         /// <inheritdoc />

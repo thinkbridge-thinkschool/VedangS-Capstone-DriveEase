@@ -331,22 +331,64 @@ app.Use(async (ctx, next) =>
     var startupLogger = sp.GetRequiredService<ILogger<Program>>();
 
     var useEnsureCreated = app.Configuration.GetValue<bool>("UseEnsureCreated");
-    async Task MigrateAsync<TContext>(string name) where TContext : DbContext
+
+    // When the app was first deployed using EnsureCreated, tables were created without
+    // any __EFMigrationsHistory entry. Subsequent MigrateAsync calls fail because
+    // InitialCreate tries to re-create existing tables. This helper seeds the history
+    // record so EF Core skips InitialCreate and only runs pending migrations.
+    async Task SeedInitialMigrationHistoryAsync(DbContext ctx, string schema, string table, string migrationId)
+    {
+        if (!ctx.Database.IsSqlServer()) return;
+        try
+        {
+            await ctx.Database.ExecuteSqlRawAsync($"""
+                IF OBJECT_ID(N'[{schema}].[__EFMigrationsHistory]') IS NULL
+                BEGIN
+                    CREATE TABLE [{schema}].[__EFMigrationsHistory] (
+                        [MigrationId] nvarchar(150) NOT NULL,
+                        [ProductVersion] nvarchar(32) NOT NULL,
+                        CONSTRAINT [PK_{schema}_MigHist] PRIMARY KEY ([MigrationId])
+                    )
+                END;
+                IF OBJECT_ID(N'[{schema}].[{table}]') IS NOT NULL
+                AND NOT EXISTS (
+                    SELECT 1 FROM [{schema}].[__EFMigrationsHistory]
+                    WHERE [MigrationId] = N'{migrationId}'
+                )
+                BEGIN
+                    INSERT INTO [{schema}].[__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+                    VALUES (N'{migrationId}', N'10.0.0')
+                END;
+                """);
+        }
+        catch (Exception ex)
+        {
+            startupLogger.LogWarning(ex, "Migration history seed skipped for schema {Schema}", schema);
+        }
+    }
+
+    async Task MigrateAsync<TContext>(string name, string schema, string table, string initialMigrationId)
+        where TContext : DbContext
     {
         try
         {
             var ctx = sp.GetRequiredService<TContext>();
-            if (useEnsureCreated) await ctx.Database.EnsureCreatedAsync();
-            else                  await ctx.Database.MigrateAsync();
+            if (useEnsureCreated)
+                await ctx.Database.EnsureCreatedAsync();
+            else
+            {
+                await SeedInitialMigrationHistoryAsync(ctx, schema, table, initialMigrationId);
+                await ctx.Database.MigrateAsync();
+            }
         }
         catch (Exception ex) { startupLogger.LogError(ex, "Migration failed for {Context}", name); }
     }
 
-    await MigrateAsync<StudentsDbContext>("Students");
-    await MigrateAsync<SchoolsDbContext>("Schools");
-    await MigrateAsync<EnrollmentsDbContext>("Enrollments");
-    await MigrateAsync<LessonsDbContext>("Lessons");
-    await MigrateAsync<NotificationsDbContext>("Notifications");
+    await MigrateAsync<StudentsDbContext>("Students",       "students",      "Students",    "20260623162520_InitialCreate");
+    await MigrateAsync<SchoolsDbContext>("Schools",         "schools",       "Schools",     "20260623162603_InitialCreate");
+    await MigrateAsync<EnrollmentsDbContext>("Enrollments", "enrollments",   "Enrollments", "20260623162636_InitialCreate");
+    await MigrateAsync<LessonsDbContext>("Lessons",         "lessons",       "Lessons",     "20260623162708_InitialCreate");
+    await MigrateAsync<NotificationsDbContext>("Notifications", "notifications", "Notifications", "20260623162735_InitialCreate");
 }
 
 await DatabaseSeeder.SeedAsync(app.Services);
