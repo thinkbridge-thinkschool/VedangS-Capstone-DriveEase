@@ -1,7 +1,45 @@
-import { Component, inject, signal, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, computed, HostListener, inject, signal, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
+import { environment } from '../../../../environments/environment';
+
+interface DemoInstructor {
+  name: string;
+  email: string;
+  license: string;
+  password: string;
+}
+
+interface DemoSchool {
+  name: string;
+  instructors: DemoInstructor[];
+}
+
+const DEMO_SCHOOLS: DemoSchool[] = [
+  { name: 'Mumbai Central Driving Academy',  instructors: [{ name: 'Amit Sharma',    email: 'amit.sharma@mumbaicentral.com',            license: 'MH-01AB1001', password: 'Instructor@123' }] },
+  { name: 'Pune Road Masters',               instructors: [{ name: 'Suresh Jadhav',  email: 'suresh.jadhav@puneroadmasters.com',         license: 'MH-12CD2001', password: 'Instructor@123' }] },
+  { name: 'Sunrise Driving Academy',         instructors: [{ name: 'Mohan Singh',    email: 'mohan.singh@sunrise.driveease.com',          license: 'MH-02EF3001', password: 'Instructor@123' }] },
+  { name: 'Thinkschool Safe Drive Institute',instructors: [{ name: 'Rahul Sharma',   email: 'rahul.sharma@thinkschool.com',               license: 'MH-20GH4001', password: 'Instructor@123' }] },
+  { name: 'Mumbai Drive Academy',            instructors: [{ name: 'Suresh Patil',   email: 'suresh.patil@mumbaidriveacademy.com',        license: 'MH-1013',     password: 'Instructor@123' }] },
+  { name: 'Nashik Road Pro',                 instructors: [{ name: 'Vikram Nair',    email: 'vikram.nair@nashikroadpro.com',              license: 'MH-1016',     password: 'Instructor@123' }] },
+  { name: 'Nagpur Speed School',             instructors: [{ name: 'Deepak Tiwari',  email: 'deepak.tiwari@nagpurspeedschool.com',        license: 'MH-1019',     password: 'Instructor@123' }] },
+  { name: 'Aurangabad Motor Training',       instructors: [{ name: 'Mohan Pawar',    email: 'mohan.pawar@aurangabadmotor.com',            license: 'MH-1022',     password: 'Instructor@123' }] },
+  { name: 'Kolhapur Drive Centre',           instructors: [{ name: 'Ganesh Bhosale', email: 'ganesh.bhosale@kolhapurdrive.com',           license: 'MH-1025',     password: 'Instructor@123' }] },
+  { name: 'Solapur Road Academy',            instructors: [{ name: 'Nilesh Mane',    email: 'nilesh.mane@solapurroadacademy.com',         license: 'MH-1028',     password: 'Instructor@123' }] },
+  { name: 'Thane AutoDrive School',          instructors: [{ name: 'Anil Gaikwad',   email: 'anil.gaikwad@thaneautodrive.com',            license: 'MH-1031',     password: 'Instructor@123' }] },
+  { name: 'Navi Mumbai Driving Hub',         instructors: [{ name: 'Vinod Kharat',   email: 'vinod.kharat@navimumbaidriving.com',         license: 'MH-1034',     password: 'Instructor@123' }] },
+  { name: 'Pimpri-Chinchwad Road School',    instructors: [{ name: 'Santosh Jagtap', email: 'santosh.jagtap@pcmcroadschool.com',          license: 'MH-1037',     password: 'Instructor@123' }] },
+  { name: 'Sangli Drive Institute',          instructors: [{ name: 'Pramod Kale',    email: 'pramod.kale@sanglidrive.com',                license: 'MH-1040',     password: 'Instructor@123' }] },
+  { name: 'Satara Motor Academy',            instructors: [{ name: 'Mangesh Karale', email: 'mangesh.karale@sataramotor.com',             license: 'MH-1043',     password: 'Instructor@123' }] },
+  { name: 'Latur Road Training Centre',      instructors: [{ name: 'Dilip Londhe',   email: 'dilip.londhe@laturroadtraining.com',         license: 'MH-1046',     password: 'Instructor@123' }] },
+  { name: 'Jalgaon Drive School',            instructors: [{ name: 'Hemant Patil',   email: 'hemant.patil@jalgaondrive.com',              license: 'MH-1049',     password: 'Instructor@123' }] },
+  { name: 'Amravati AutoSkills',             instructors: [{ name: 'Ajay Deshmukh',  email: 'ajay.deshmukh@amravatiautoskills.com',       license: 'MH-1052',     password: 'Instructor@123' }] },
+  { name: 'Akola Road Masters',              instructors: [{ name: 'Sunil Wankhade', email: 'sunil.wankhade@akolaroadmasters.com',        license: 'MH-1055',     password: 'Instructor@123' }] },
+  { name: 'Ratnagiri Coastal Drive',         instructors: [{ name: 'Ramesh Gavhane', email: 'ramesh.gavhane@ratnagiricoastaldrive.com',   license: 'MH-1058',     password: 'Instructor@123' }] },
+];
 
 @Component({
   selector: 'app-login',
@@ -16,6 +54,7 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
   private readonly fb     = inject(FormBuilder);
   private readonly auth   = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly http   = inject(HttpClient);
 
   readonly loading = signal(false);
   readonly error   = signal<string | null>(null);
@@ -26,13 +65,36 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
     password: ['', [Validators.required, Validators.minLength(8)]]
   });
 
+  // ── Demo credentials ───────────────────────────────────────────────────────
+  readonly showDemoModal = signal(false);
+  readonly demoSearch    = signal('');
+  readonly copiedKey     = signal<string | null>(null);
+  readonly demoSchools   = DEMO_SCHOOLS;
+  readonly demoSeeding   = signal(false);
+
+  readonly filteredDemoSchools = computed(() => {
+    const q = this.demoSearch().trim().toLowerCase();
+    if (!q) return this.demoSchools;
+    return this.demoSchools
+      .map(school => ({
+        ...school,
+        instructors: school.instructors.filter(i =>
+          i.name.toLowerCase().includes(q)  ||
+          i.email.toLowerCase().includes(q) ||
+          school.name.toLowerCase().includes(q)
+        )
+      }))
+      .filter(s => s.instructors.length > 0);
+  });
+
+  // ── Road canvas ────────────────────────────────────────────────────────────
   private rafId: number | null = null;
   private offset = 0;
   private resizeHandler: (() => void) | null = null;
 
   ngAfterViewInit() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    this.startRoad();
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) this.startRoad();
+    this.seedDemoInstructors();
   }
 
   ngOnDestroy() {
@@ -40,10 +102,96 @@ export class LoginComponent implements AfterViewInit, OnDestroy {
     if (this.resizeHandler) window.removeEventListener('resize', this.resizeHandler);
   }
 
+  @HostListener('keydown.escape')
+  onEscape() {
+    if (this.showDemoModal()) this.showDemoModal.set(false);
+  }
+
   setRole(r: 'student' | 'instructor') {
     this.role.set(r);
     this.error.set(null);
     this.form.reset();
+    if (r === 'instructor') this.seedDemoInstructors();
+  }
+
+  private async seedDemoInstructors(): Promise<void> {
+    // Phase 1 — instant, no API calls: seed fake IDs so login works immediately
+    const profiles: Record<string, any> = JSON.parse(localStorage.getItem('instructor_profiles') ?? '{}');
+    let changed = false;
+    for (const school of DEMO_SCHOOLS) {
+      for (const inst of school.instructors) {
+        if (profiles[inst.email]) continue;
+        profiles[inst.email] = {
+          instructorId: crypto.randomUUID(),
+          name: inst.name,
+          schoolName: school.name,
+          schoolId: crypto.randomUUID(),
+          passwordHash: btoa(inst.password)
+        };
+        changed = true;
+      }
+    }
+    if (changed) localStorage.setItem('instructor_profiles', JSON.stringify(profiles));
+
+    // Phase 2 — background: replace fake IDs with real backend IDs (so lessons show up)
+    this.demoSeeding.set(true);
+    try {
+      const schools = await firstValueFrom(
+        this.http.get<{ id: string; name: string }[]>(`${environment.apiUrl}/api/v1/schools`)
+      );
+      const live = JSON.parse(localStorage.getItem('instructor_profiles') ?? '{}');
+      let enriched = false;
+
+      for (const demoSchool of DEMO_SCHOOLS) {
+        const backendSchool = schools.find(s => s.name === demoSchool.name);
+        if (!backendSchool) continue;
+        try {
+          const list = await firstValueFrom(
+            this.http.get<{ id: string; licenseNumber: string }[]>(
+              `${environment.apiUrl}/api/v1/schools/${backendSchool.id}/instructors`
+            )
+          );
+          for (const inst of demoSchool.instructors) {
+            const found = list.find(i => i.licenseNumber === inst.license);
+            if (found && live[inst.email]) {
+              live[inst.email].instructorId = found.id;
+              live[inst.email].schoolId     = backendSchool.id;
+              enriched = true;
+            } else if (!found && live[inst.email]) {
+              try {
+                const res = await firstValueFrom(
+                  this.http.post<{ id: string }>(
+                    `${environment.apiUrl}/api/v1/schools/${backendSchool.id}/instructors`,
+                    { fullName: inst.name, licenseNumber: inst.license }
+                  )
+                );
+                live[inst.email].instructorId = res.id;
+                live[inst.email].schoolId     = backendSchool.id;
+                enriched = true;
+              } catch { /* duplicate license or error — keep fake ID */ }
+            }
+          }
+        } catch { /* school fetch failed — keep fake IDs */ }
+        if (enriched) localStorage.setItem('instructor_profiles', JSON.stringify(live));
+      }
+    } catch { /* backend unavailable — fake IDs remain, login still works */ }
+    finally { this.demoSeeding.set(false); }
+  }
+
+  openDemoModal()  { this.showDemoModal.set(true);  this.demoSearch.set(''); }
+  closeDemoModal() { this.showDemoModal.set(false); }
+
+  copyToClipboard(text: string, key: string) {
+    navigator.clipboard.writeText(text).then(() => {
+      this.copiedKey.set(key);
+      setTimeout(() => this.copiedKey.set(null), 2000);
+    });
+  }
+
+  schoolHue(name: string): number {
+    let h = 0;
+    for (const c of name) h = (h * 31 + c.charCodeAt(0)) & 0xffff;
+    return h % 360;
   }
 
   submit() {

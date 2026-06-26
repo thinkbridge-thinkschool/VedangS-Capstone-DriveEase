@@ -1,7 +1,7 @@
 // ── Root layout ───────────────────────────────────────────────────────────────
 .dashboard {
   min-height: 100vh;
-  background: var(--bg);
+  background: transparent;
   display: flex;
   flex-direction: column;
 }
@@ -16,10 +16,11 @@
   gap: 0;
   height: 56px;
   padding: 0 1.5rem;
-  background: rgba(255,255,255,0.9);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  box-shadow: 0 1px 0 var(--border);
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border-bottom: 1px solid rgba(226,232,240,0.75);
+  box-shadow: var(--shadow-nav);
 }
 
 .inav-brand {
@@ -227,19 +228,19 @@
 }
 
 .stat-card {
-  background: var(--surface);
+  background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 18px;
   padding: 1.375rem 1.5rem;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
 
   &[role=button] {
     cursor: pointer;
-    &:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--primary-border); }
+    &:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-4px); border-color: var(--border-blue-hover); }
   }
 }
 
@@ -319,9 +320,9 @@
 
 // ── Overview panel ────────────────────────────────────────────────────────────
 .overview-panel {
-  background: var(--surface);
+  background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 18px;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   margin-bottom: 1.5rem;
@@ -471,14 +472,14 @@
 .lesson-list { display: flex; flex-direction: column; gap: 1rem; }
 
 .lesson-card {
-  background: var(--surface);
+  background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 18px;
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
-  transition: box-shadow 0.2s, transform 0.2s;
+  transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
 
-  &:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  &:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-4px); border-color: var(--border-blue-hover); }
 }
 
 .lesson-card-header {
@@ -646,14 +647,14 @@
   align-items: flex-start;
   gap: 1rem;
   padding: 1.25rem 1.5rem;
-  background: var(--surface);
+  background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 18px;
   box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: box-shadow 0.15s, border-color 0.15s;
+  transition: box-shadow 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
 
-  &:hover { box-shadow: var(--shadow-md); border-color: var(--border-hover); }
+  &:hover { box-shadow: var(--shadow-card-hover); border-color: var(--border-blue-hover); transform: translateY(-2px); }
   &.unread { border-color: var(--primary-border); background: var(--primary-light); }
 }
 
@@ -699,11 +700,14 @@
 .history-list { display: flex; flex-direction: column; gap: 1.25rem; }
 
 .history-card {
-  background: var(--surface);
+  background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 18px;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.22s ease, border-color 0.22s ease;
+
+  &:hover { box-shadow: var(--shadow-card-hover); border-color: var(--border-blue-hover); }
 }
 
 .history-card-header {

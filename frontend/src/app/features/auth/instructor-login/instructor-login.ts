@@ -15,38 +15,26 @@ interface DemoSchool {
 }
 
 const DEMO_SCHOOLS: DemoSchool[] = [
-  {
-    name: 'Mumbai Central Driving Academy',
-    instructors: [
-      { name: 'Amit Sharma',  email: 'amit.sharma@mumbaicentral.com',  license: 'MH-01AB1001', password: 'Instructor@123' },
-      { name: 'Priya Patel',  email: 'priya.patel@mumbaicentral.com',  license: 'MH-01AB1002', password: 'Instructor@123' },
-      { name: 'Ravi Nair',    email: 'ravi.nair@mumbaicentral.com',    license: 'MH-01AB1003', password: 'Instructor@123' },
-    ]
-  },
-  {
-    name: 'Pune Road Masters',
-    instructors: [
-      { name: 'Suresh Jadhav',  email: 'suresh.jadhav@puneroadmasters.com', license: 'MH-12CD2001', password: 'Instructor@123' },
-      { name: 'Neha Kulkarni',  email: 'neha.kulkarni@puneroadmasters.com', license: 'MH-12CD2002', password: 'Instructor@123' },
-      { name: 'Vijay Desai',    email: 'vijay.desai@puneroadmasters.com',   license: 'MH-12CD2003', password: 'Instructor@123' },
-    ]
-  },
-  {
-    name: 'Sunrise Driving Academy',
-    instructors: [
-      { name: 'Mohan Singh',   email: 'mohan.singh@sunrise.driveease.com',   license: 'MH-02EF3001', password: 'Instructor@123' },
-      { name: 'Kavita Rao',    email: 'kavita.rao@sunrise.driveease.com',    license: 'MH-02EF3002', password: 'Instructor@123' },
-      { name: 'Deepak Thakur', email: 'deepak.thakur@sunrise.driveease.com', license: 'MH-02EF3003', password: 'Instructor@123' },
-    ]
-  },
-  {
-    name: 'Thinkschool Safe Drive Institute',
-    instructors: [
-      { name: 'Rahul Sharma', email: 'rahul.sharma@thinkschool.com', license: 'MH-20GH4001', password: 'Instructor@123' },
-      { name: 'Anita Joshi',  email: 'anita.joshi@thinkschool.com',  license: 'MH-20GH4002', password: 'Instructor@123' },
-      { name: 'Sanjay More',  email: 'sanjay.more@thinkschool.com',  license: 'MH-20GH4003', password: 'Instructor@123' },
-    ]
-  },
+  { name: 'Mumbai Central Driving Academy',  instructors: [{ name: 'Amit Sharma',    email: 'amit.sharma@mumbaicentral.com',            license: 'MH-01AB1001', password: 'Instructor@123' }] },
+  { name: 'Pune Road Masters',               instructors: [{ name: 'Suresh Jadhav',  email: 'suresh.jadhav@puneroadmasters.com',         license: 'MH-12CD2001', password: 'Instructor@123' }] },
+  { name: 'Sunrise Driving Academy',         instructors: [{ name: 'Mohan Singh',    email: 'mohan.singh@sunrise.driveease.com',          license: 'MH-02EF3001', password: 'Instructor@123' }] },
+  { name: 'Thinkschool Safe Drive Institute',instructors: [{ name: 'Rahul Sharma',   email: 'rahul.sharma@thinkschool.com',               license: 'MH-20GH4001', password: 'Instructor@123' }] },
+  { name: 'Mumbai Drive Academy',            instructors: [{ name: 'Suresh Patil',   email: 'suresh.patil@mumbaidriveacademy.com',        license: 'MH-1013',     password: 'Instructor@123' }] },
+  { name: 'Nashik Road Pro',                 instructors: [{ name: 'Vikram Nair',    email: 'vikram.nair@nashikroadpro.com',              license: 'MH-1016',     password: 'Instructor@123' }] },
+  { name: 'Nagpur Speed School',             instructors: [{ name: 'Deepak Tiwari',  email: 'deepak.tiwari@nagpurspeedschool.com',        license: 'MH-1019',     password: 'Instructor@123' }] },
+  { name: 'Aurangabad Motor Training',       instructors: [{ name: 'Mohan Pawar',    email: 'mohan.pawar@aurangabadmotor.com',            license: 'MH-1022',     password: 'Instructor@123' }] },
+  { name: 'Kolhapur Drive Centre',           instructors: [{ name: 'Ganesh Bhosale', email: 'ganesh.bhosale@kolhapurdrive.com',           license: 'MH-1025',     password: 'Instructor@123' }] },
+  { name: 'Solapur Road Academy',            instructors: [{ name: 'Nilesh Mane',    email: 'nilesh.mane@solapurroadacademy.com',         license: 'MH-1028',     password: 'Instructor@123' }] },
+  { name: 'Thane AutoDrive School',          instructors: [{ name: 'Anil Gaikwad',   email: 'anil.gaikwad@thaneautodrive.com',            license: 'MH-1031',     password: 'Instructor@123' }] },
+  { name: 'Navi Mumbai Driving Hub',         instructors: [{ name: 'Vinod Kharat',   email: 'vinod.kharat@navimumbaidriving.com',         license: 'MH-1034',     password: 'Instructor@123' }] },
+  { name: 'Pimpri-Chinchwad Road School',    instructors: [{ name: 'Santosh Jagtap', email: 'santosh.jagtap@pcmcroadschool.com',          license: 'MH-1037',     password: 'Instructor@123' }] },
+  { name: 'Sangli Drive Institute',          instructors: [{ name: 'Pramod Kale',    email: 'pramod.kale@sanglidrive.com',                license: 'MH-1040',     password: 'Instructor@123' }] },
+  { name: 'Satara Motor Academy',            instructors: [{ name: 'Mangesh Karale', email: 'mangesh.karale@sataramotor.com',             license: 'MH-1043',     password: 'Instructor@123' }] },
+  { name: 'Latur Road Training Centre',      instructors: [{ name: 'Dilip Londhe',   email: 'dilip.londhe@laturroadtraining.com',         license: 'MH-1046',     password: 'Instructor@123' }] },
+  { name: 'Jalgaon Drive School',            instructors: [{ name: 'Hemant Patil',   email: 'hemant.patil@jalgaondrive.com',              license: 'MH-1049',     password: 'Instructor@123' }] },
+  { name: 'Amravati AutoSkills',             instructors: [{ name: 'Ajay Deshmukh',  email: 'ajay.deshmukh@amravatiautoskills.com',       license: 'MH-1052',     password: 'Instructor@123' }] },
+  { name: 'Akola Road Masters',              instructors: [{ name: 'Sunil Wankhade', email: 'sunil.wankhade@akolaroadmasters.com',        license: 'MH-1055',     password: 'Instructor@123' }] },
+  { name: 'Ratnagiri Coastal Drive',         instructors: [{ name: 'Ramesh Gavhane', email: 'ramesh.gavhane@ratnagiricoastaldrive.com',   license: 'MH-1058',     password: 'Instructor@123' }] },
 ];
 
 @Component({

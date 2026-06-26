@@ -4,10 +4,11 @@
   gap: 2rem;
   padding: 0 2rem;
   height: 60px;
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border-bottom: 1px solid rgba(226,232,240,0.75);
+  box-shadow: var(--shadow-nav);
   position: sticky;
   top: 0;
   z-index: 200;
@@ -45,12 +46,13 @@
 
     svg { flex-shrink: 0; opacity: 0.7; }
 
-    &:hover { color: var(--text); background: var(--border); }
+    &:hover { color: var(--text); background: rgba(15,23,42,0.05); }
 
     &.active {
       color: var(--primary);
       background: var(--primary-light);
       font-weight: 600;
+      box-shadow: 0 0 0 1px var(--primary-border);
 
       svg { opacity: 1; }
     }
