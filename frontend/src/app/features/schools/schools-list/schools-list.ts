@@ -43,7 +43,10 @@ export class SchoolsListComponent implements OnInit {
       enrollment: this.enrollmentService.getMyEnrollment().pipe(catchError(() => of(null)))
     }).subscribe({
       next: ({ schools, enrollment }) => {
-        this.schools.set(schools);
+        const enrolledId = enrollment?.drivingSchoolId;
+        this.schools.set(schools.sort((a, b) =>
+          (b.id === enrolledId ? 1 : 0) - (a.id === enrolledId ? 1 : 0)
+        ));
         this.myEnrollment.set(enrollment);
         this.loading.set(false);
       },
